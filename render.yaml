@@ -7,3 +7,7 @@ services:
     envVars:
       - key: PORT
         value: 10000
+      - key: YOUTUBE_API_KEY
+        value: <YOUR_YOUTUBE_DATA_API_V3_KEY>
+      - key: ASSEMBLYAI_API_KEY
+        value: <YOUR_ASSEMBLYAI_KEY>
