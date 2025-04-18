@@ -1,2 +1,6 @@
-fastapi
-uvicorn
+ fastapi
+ uvicorn
++
++requests
++youtube-transcript-api
++assemblyai
