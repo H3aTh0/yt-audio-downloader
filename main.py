@@ -2,6 +2,9 @@ import os, re, uuid, time, subprocess, requests
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.responses import JSONResponse
 from youtube_transcript_api import YouTubeTranscriptApi
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 
