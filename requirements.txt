@@ -1,6 +1,6 @@
- fastapi
- uvicorn
-+
-+requests
-+youtube-transcript-api
-+assemblyai
+fastapi
+uvicorn
+requests
+youtube-transcript-api
+assemblyai
+python-dotenv
