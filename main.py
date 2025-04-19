@@ -2,10 +2,11 @@
 # ------------------------------------------------------
 # Imports and environment loading
 from dotenv import load_dotenv  # Load .env into os.environ
-import os, re, uuid, time, subprocess, requests
+import os, re, uuid, time, requests
 from fastapi import FastAPI, Body, Query, HTTPException
 from fastapi.responses import JSONResponse
-from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api import YouTubeTranscriptApi  # Fallback caption scraping
+import yt_dlp  # Use Python API to avoid CLI issues
 
 # Load environment variables at startup
 load_dotenv()
@@ -70,7 +71,7 @@ def download_and_transcribe_audio(
     payload: dict = Body(..., description="JSON with a 'video_id' key")
 ):
     """
-    Downloads the audio-only stream directly (no conversion) and uploads to AssemblyAI.
+    Downloads the best audio-only stream via yt_dlp library and uploads to AssemblyAI.
     Expects JSON body: { "video_id": "<ID>" }
     Returns transcript text, paragraphs, and speaker_labels.
     """
@@ -80,19 +81,19 @@ def download_and_transcribe_audio(
     if not ASSEMBLYAI_API_KEY:
         raise HTTPException(status_code=500, detail="ASSEMBLYAI_API_KEY not set")
 
-    # Download best audio stream in m4a container (no ffmpeg needed)
+    # Download best audio stream in m4a container using Python API
     output_path = f"/tmp/{uuid.uuid4()}.m4a"
+    ydl_opts = {
+        'format': 'bestaudio[ext=m4a]',
+        'outtmpl': output_path,
+        'quiet': True,
+        'nopart': True,
+    }
     try:
-        subprocess.run(
-            [
-                "yt-dlp", "-f", "bestaudio[ext=m4a]",  # select m4a stream
-                "-o", output_path,
-                f"https://youtu.be/{video_id}"
-            ],
-            check=True
-        )
-    except subprocess.CalledProcessError as e:
-        raise HTTPException(status_code=500, detail=f"yt-dlp failed: {e}")
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([f"https://youtu.be/{video_id}"])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"yt_dlp download failed: {e}")
 
     # Upload audio file to AssemblyAI
     with open(output_path, "rb") as audio_file:
