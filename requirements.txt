@@ -4,3 +4,4 @@ requests
 youtube-transcript-api
 assemblyai
 python-dotenv
+yt-dlp
