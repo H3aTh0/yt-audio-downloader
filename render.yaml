@@ -2,7 +2,6 @@ services:
   - type: web
     name: yt-audio-downloader
     env: python
-    # 1) Install ffmpeg, then 2) install Python deps
     buildCommand: |
       apt-get update && \
       apt-get install -y ffmpeg && \
