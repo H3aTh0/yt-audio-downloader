@@ -1,9 +1,9 @@
 services:
   - type: web
     name: yt-audio-downloader
-    env: docker               # ← must be “docker”
+    env: docker            # ← must be “docker”
     dockerfilePath: ./Dockerfile
-    # No buildCommand or startCommand here—Dockerfile covers both.
+    # NO buildCommand or startCommand here—Dockerfile covers both.
     envVars:
       - key: YOUTUBE_API_KEY
         value: ${YOUTUBE_API_KEY}
